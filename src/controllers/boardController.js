@@ -1,4 +1,7 @@
+/* eslint-disable no-console */
 import { StatusCodes } from 'http-status-codes'
+import { boardService } from '~/services/boardService'
+import ApiError from '~/utils/apiError'
 
 const createNew = async (req, res, next) => {
   try {
@@ -7,11 +10,12 @@ const createNew = async (req, res, next) => {
     console.log('req.body', req.query)
     //params được gọi tới dưới dạng /:id Ex: boards/id-123?name=abc&age=7
     console.log('req.body', req.params)
-    res.status(StatusCodes.CREATED).json({ message: 'Note: API create new boards from controller' })
+    // navigate to service layer
+    const createdBoard = await boardService.createNew(req.body)
+    res.status(StatusCodes.CREATED).json(createdBoard)
+
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      errors: error.message
-    })
+    next(error)
   }
 }
 
